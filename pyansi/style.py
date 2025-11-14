@@ -1,5 +1,5 @@
 from typing import Self, Tuple, Optional
-from color import AnsiColor
+from .color import AnsiColor
 
 BOLD_MASK = 0b1
 ITALIC_MASK = 0b10

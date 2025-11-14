@@ -1,2 +1,2 @@
-from color import AnsiColor
-from style import AnsiStyle
+from .color import AnsiColor
+from .style import AnsiStyle
