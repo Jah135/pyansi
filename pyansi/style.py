@@ -1,5 +1,6 @@
 from typing import Self, Tuple, Optional
 from .color import AnsiColor
+from .codes import RESET
 
 BOLD_MASK = 0b1
 ITALIC_MASK = 0b10
@@ -79,3 +80,8 @@ class AnsiStyle:
 		return self.__set_flag(UNDERLINE_MASK, enabled)
 	def strikethrough(self, enabled: bool = True) -> Self:
 		return self.__set_flag(STRIKETHROUGH_MASK, enabled)
+	
+	def apply(self, text: str) -> str:
+		return str(self) + text
+	def apply_with_reset(self, text: str) -> str:
+		return str(self) + text + RESET
