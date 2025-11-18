@@ -1,12 +1,7 @@
-from typing import Self, Tuple, Optional
+from typing import Self, Optional
 from .color import AnsiColor
 from .codes import RESET
-
-BOLD_MASK = 0b1
-ITALIC_MASK = 0b10
-DIM_MASK = 0b100
-UNDERLINE_MASK = 0b1000
-STRIKETHROUGH_MASK = 0b10000
+from .masks import *
 
 class AnsiStyle:
 	def __init__(self, *_, fg: Optional[AnsiColor] = None, bg: Optional[AnsiColor] = None, flags: int = 0):
@@ -19,8 +14,8 @@ class AnsiStyle:
 			return ""
 
 		output = "\x1b["
-
-		_wrote = False;
+		_wrote = False
+		
 		def _append(text: str):
 			nonlocal output
 			nonlocal _wrote
@@ -84,4 +79,4 @@ class AnsiStyle:
 	def apply(self, text: str) -> str:
 		return str(self) + text
 	def apply_with_reset(self, text: str) -> str:
-		return str(self) + text + RESET
+		return self.apply(text) + RESET
