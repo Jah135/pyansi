@@ -1,1 +1,7 @@
 RESET = "\x1b[0m"
+
+BOLD = "1"
+DIM = "2"
+ITALIC = "3"
+UNDERLINE = "4"
+STRIKETHROUGH = "9"
