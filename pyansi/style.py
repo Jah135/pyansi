@@ -3,80 +3,95 @@ from .color import AnsiColor
 from .codes import RESET
 from .masks import *
 
+
 class AnsiStyle:
-	def __init__(self, *_, fg: Optional[AnsiColor] = None, bg: Optional[AnsiColor] = None, flags: int = 0):
-		self.foreground = fg
-		self.background = bg
-		self.flags = flags
-	
-	def __str__(self) -> str:
-		if self.__is_plain():
-			return ""
+    def __init__(
+        self,
+        *_,
+        fg: Optional[AnsiColor] = None,
+        bg: Optional[AnsiColor] = None,
+        flags: int = 0
+    ):
+        self.foreground = fg
+        self.background = bg
+        self.flags = flags
 
-		output = "\x1b["
-		_wrote = False
-		
-		def _append(text: str):
-			nonlocal output
-			nonlocal _wrote
+    def __str__(self) -> str:
+        if self.__is_plain():
+            return ""
 
-			if _wrote:
-				output += ";"
-			
-			output += text
-			_wrote = True
+        output = "\x1b["
+        has_written = False
 
-		if self.__get_flag(BOLD_MASK):
-			_append("1")
-		if self.__get_flag(DIM_MASK):
-			_append("2")
-		if self.__get_flag(ITALIC_MASK):
-			_append("3")
-		if self.__get_flag(UNDERLINE_MASK):
-			_append("4")
-		if self.__get_flag(STRIKETHROUGH_MASK):
-			_append("9")
+        def append(text: str):
+            nonlocal output
+            nonlocal has_written
 
-		if self.foreground != None:
-			_append(self.foreground.get_sequence(False))
-		if self.background != None:
-			_append(self.background.get_sequence(True))
+            if has_written:
+                output += ";"
 
-		output += "m"
+            output += text
+            has_written = True
 
-		return output
+        if self.get_flag(BOLD_MASK):
+            append("1")
+        if self.get_flag(DIM_MASK):
+            append("2")
+        if self.get_flag(ITALIC_MASK):
+            append("3")
+        if self.get_flag(UNDERLINE_MASK):
+            append("4")
+        if self.get_flag(STRIKETHROUGH_MASK):
+            append("9")
 
-	def __is_plain(self) -> bool:
-		return self.foreground == None and self.background == None and self.flags == 0
-	def __set_flag(self, mask: int, enabled: bool) -> Self:
-		if enabled:
-			self.flags |= mask
-		else:
-			self.flags &= ~mask
-		
-		return self
-	def __get_flag(self, mask: int) -> bool:
-		return self.flags & mask == mask
+        if self.foreground != None:
+            append(self.foreground.get_sequence(False))
+        if self.background != None:
+            append(self.background.get_sequence(True))
 
-	def fg(self, color: Optional[AnsiColor]) -> Self:
-		self.foreground = color
-		return self
-	def bg(self, color: Optional[AnsiColor]) -> Self:
-		self.background = color
-		return self
+        output += "m"
 
-	def bold(self, enabled: bool = True) -> Self:
-		return self.__set_flag(BOLD_MASK, enabled)
-	def italic(self, enabled: bool = True) -> Self:
-		return self.__set_flag(ITALIC_MASK, enabled)
-	def dim(self, enabled: bool = True) -> Self:
-		return self.__set_flag(DIM_MASK, enabled)
-	def underline(self, enabled: bool = True) -> Self:
-		return self.__set_flag(UNDERLINE_MASK, enabled)
-	def strikethrough(self, enabled: bool = True) -> Self:
-		return self.__set_flag(STRIKETHROUGH_MASK, enabled)
-	
-	def apply(self, text: str) -> str:
-		return str(self) + text
-	def apply_with_reset(self, text: str) -> str:
-		return self.apply(text) + RESET
+        return output
+
+    def __is_plain(self) -> bool:
+        return self.foreground == None and self.background == None and self.flags == 0
+
+    def set_flag(self, mask: int, enabled: bool) -> Self:
+        if enabled:
+            self.flags |= mask
+        else:
+            self.flags &= ~mask
+
+        return self
+
+    def get_flag(self, mask: int) -> bool:
+        return self.flags & mask == mask
+
+    def fg(self, color: Optional[AnsiColor]) -> Self:
+        self.foreground = color
+        return self
+
+    def bg(self, color: Optional[AnsiColor]) -> Self:
+        self.background = color
+        return self
+
+    def bold(self, enabled: bool = True) -> Self:
+        return self.set_flag(BOLD_MASK, enabled)
+
+    def italic(self, enabled: bool = True) -> Self:
+        return self.set_flag(ITALIC_MASK, enabled)
+
+    def dim(self, enabled: bool = True) -> Self:
+        return self.set_flag(DIM_MASK, enabled)
+
+    def underline(self, enabled: bool = True) -> Self:
+        return self.set_flag(UNDERLINE_MASK, enabled)
+
+    def strikethrough(self, enabled: bool = True) -> Self:
+        return self.set_flag(STRIKETHROUGH_MASK, enabled)
+
+    def apply(self, text: str) -> str:
+        return str(self) + text
+
+    def apply_with_reset(self, text: str) -> str:
+        return self.apply(text) + RESET

@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="pyansi",
-    version="0.3.1",
+    version="0.3.2",
     description="",
     url="https://github.com/Jah135/pyansi",
     author="Jah135",

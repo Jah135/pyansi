@@ -1,3 +1,5 @@
 # pyansi
 
-`pip install git+https://github.com/Jah135/pyansi.git`
+```ps
+pip install git+https://github.com/Jah135/pyansi.git
+```
